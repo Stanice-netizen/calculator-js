@@ -1,0 +1,179 @@
+const display = document.getElementById('display')
+
+let currentNumber = ''
+let previousNumber = ''
+let operator = ''
+let expression = ''
+let shouldResetDisplay = false
+
+// Add numbers and operators
+function appendValue (value) {
+  // If the calculator has just displayed a result
+  if (shouldResetDisplay) {
+    if (value === '+' || value === '-' || value === '*' || value === '/') {
+      previousNumber = currentNumber
+      expression = currentNumber + ' ' + value + ' '
+      display.value = expression
+
+      operator = value
+      currentNumber = ''
+      shouldResetDisplay = false
+
+      return
+    }
+
+    // Pressing a number after the result starts a new calculation
+    currentNumber = ''
+    previousNumber = ''
+    operator = ''
+    expression = ''
+    shouldResetDisplay = false
+  }
+
+  // Operators
+  if (value === '+' || value === '-' || value === '*' || value === '/') {
+    // Don't allow an operator before a number
+    if (currentNumber === '' && previousNumber === '') {
+      return
+    }
+
+    // Don't allow two operators in a row
+    if (operator !== '' && currentNumber === '') {
+      return
+    }
+
+    previousNumber = currentNumber
+    operator = value
+    currentNumber = ''
+
+    expression += ' ' + value + ' '
+
+    display.value = expression
+
+    return
+  }
+
+  // Percentage
+  if (value === '%') {
+    if (currentNumber === '') {
+      return
+    }
+
+    currentNumber = String(Number(currentNumber) / 100)
+
+    // Replace the current number in the expression
+    const parts = expression.split(' ')
+
+    parts[parts.length - 1] = currentNumber
+
+    expression = parts.join(' ')
+
+    display.value = expression
+
+    return
+  }
+
+  // Decimal
+  if (value === '.') {
+    if (currentNumber.includes('.')) {
+      return
+    }
+
+    if (currentNumber === '') {
+      currentNumber = '0.'
+    } else {
+      currentNumber += '.'
+    }
+
+    expression += value
+
+    display.value = expression
+
+    return
+  }
+
+  // Number
+  currentNumber += value
+
+  expression += value
+
+  display.value = expression
+}
+
+// Clear calculator
+function clearDisplay () {
+  currentNumber = ''
+  previousNumber = ''
+  operator = ''
+  expression = ''
+  shouldResetDisplay = false
+
+  display.value = ''
+}
+
+// Change sign
+function changeSign () {
+  if (currentNumber === '') {
+    return
+  }
+
+  if (currentNumber.startsWith('-')) {
+    currentNumber = currentNumber.slice(1)
+  } else {
+    currentNumber = '-' + currentNumber
+  }
+
+  // Replace the last number in the expression
+  const parts = expression.split(' ')
+
+  parts[parts.length - 1] = currentNumber
+
+  expression = parts.join(' ')
+
+  display.value = expression
+}
+
+// Calculate
+function calculate () {
+  if (previousNumber === '' || currentNumber === '' || operator === '') {
+    return
+  }
+
+  const firstNumber = Number(previousNumber)
+  const secondNumber = Number(currentNumber)
+
+  let result
+
+  if (operator === '+') {
+    result = firstNumber + secondNumber
+  } else if (operator === '-') {
+    result = firstNumber - secondNumber
+  } else if (operator === '*') {
+    result = firstNumber * secondNumber
+  } else if (operator === '/') {
+    if (secondNumber === 0) {
+      display.value = 'Error'
+
+      currentNumber = ''
+      previousNumber = ''
+      operator = ''
+      expression = ''
+
+      return
+    }
+
+    result = firstNumber / secondNumber
+  }
+
+  result = Number(result.toFixed(10))
+
+  // Show only the answer after =
+  display.value = result
+
+  currentNumber = String(result)
+  previousNumber = ''
+  operator = ''
+  expression = String(result)
+
+  shouldResetDisplay = true
+}

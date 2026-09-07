@@ -1,30 +1,26 @@
  # 🏷 Project Name
 
 > Short one-line description of what this project does.
-The bash script creates a file where it adds, deletes or list the tasks as required ny the user.
+The calculator takes inputs that are numbers and perform the desired operations.
 
 ---
 
 ## 📌 Problem Statement
 
 Describe the real-world problem this project solves.
-it takes less than a minute to collect, edit and display all the information that could be obtained manually by the user.
+To manually perform arithmetic operations takes alot of time and sometimes produce inaccurate results.
 
 ---
 
 ## 🎯 Project Goals
 
-- Work with text files in Bash
-- Use command-line arguments
-- Use conditional statements (if, case)
-- Append, read, and remove lines in files
-- Display useful feedback to the user
+- Work with text files in Java script
 ---
 
 ## 🛠 Tech Stack
 
 **Backend:**
-- Bash
+- Java script
 
 **Other Tools:**  
 - Git & GitHub  
@@ -33,18 +29,17 @@ it takes less than a minute to collect, edit and display all the information tha
 
 ## 🖥 Features
 
-- Accepts arguments
-- Stores tasks
-- Lists tasks
-- Deletes tasks
-- Handles errors gracefully
+- Accepts only numbers
+- Perform the desired operations
+- Perform many operations at a time
+- Display output
+- Keep history of operations
 ---
 
 ## 📷 Screenshots
 
 (Add screenshots here)
-![alt text](<Screenshot from 2026-04-20 14-17-27.png>) 
-![alt text](<Screenshot from 2026-04-20 14-17-46.png>)
+![alt text](<assets/Screenshot from 2026-09-07 10-13-57.png>) 
 ---
 
 ## ⚙ Installation & Setup
