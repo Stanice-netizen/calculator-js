@@ -177,3 +177,9 @@ function calculate () {
 
   shouldResetDisplay = true
 }
+
+// Make functions available to HTML onclick attributes
+window.appendValue = appendValue
+window.clearDisplay = clearDisplay
+window.changeSign = changeSign
+window.calculate = calculate
