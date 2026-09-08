@@ -27,25 +27,36 @@ function performCalculation (firstNumber, secondNumber, selectedOperator) {
 
     return firstNumber / secondNumber
   }
+
+  return null
+}
+
+// Format calculation result
+function formatResult (result) {
+  return Number(result.toFixed(10))
+}
+
+// Reset calculator after an error
+function resetAfterError () {
+  currentNumber = ''
+  previousNumber = ''
+  operator = ''
+  expression = ''
 }
 
 // Add numbers and operators
 function appendValue (value) {
-  // If the calculator has just displayed a result
   if (shouldResetDisplay) {
     if (value === '+' || value === '-' || value === '*' || value === '/') {
       previousNumber = currentNumber
       expression = currentNumber + ' ' + value + ' '
       display.value = expression
-
       operator = value
       currentNumber = ''
       shouldResetDisplay = false
-
       return
     }
 
-    // Pressing a number after the result starts a new calculation
     currentNumber = ''
     previousNumber = ''
     operator = ''
@@ -53,19 +64,15 @@ function appendValue (value) {
     shouldResetDisplay = false
   }
 
-  // Operators
   if (value === '+' || value === '-' || value === '*' || value === '/') {
-    // Don't allow an operator before a number
     if (currentNumber === '' && previousNumber === '') {
       return
     }
 
-    // Don't allow two operators in a row
     if (operator !== '' && currentNumber === '') {
       return
     }
 
-    // Resolve the pending operation before using the new operator
     if (previousNumber !== '' && operator !== '' && currentNumber !== '') {
       const result = performCalculation(
         Number(previousNumber),
@@ -75,18 +82,11 @@ function appendValue (value) {
 
       if (result === null) {
         display.value = 'Error'
-
-        currentNumber = ''
-        previousNumber = ''
-        operator = ''
-        expression = ''
-
+        resetAfterError()
         return
       }
 
-      const roundedResult = Number(result.toFixed(10))
-
-      previousNumber = String(roundedResult)
+      previousNumber = String(formatResult(result))
       currentNumber = ''
     } else {
       previousNumber = currentNumber
@@ -94,15 +94,11 @@ function appendValue (value) {
     }
 
     operator = value
-
     expression += ' ' + value + ' '
-
     display.value = expression
-
     return
   }
 
-  // Percentage
   if (value === '%') {
     if (currentNumber === '') {
       return
@@ -110,19 +106,14 @@ function appendValue (value) {
 
     currentNumber = String(Number(currentNumber) / 100)
 
-    // Replace the current number in the expression
     const parts = expression.split(' ')
-
     parts[parts.length - 1] = currentNumber
-
     expression = parts.join(' ')
 
     display.value = expression
-
     return
   }
 
-  // Decimal
   if (value === '.') {
     if (currentNumber.includes('.')) {
       return
@@ -135,17 +126,12 @@ function appendValue (value) {
     }
 
     expression += value
-
     display.value = expression
-
     return
   }
 
-  // Number
   currentNumber += value
-
   expression += value
-
   display.value = expression
 }
 
@@ -156,7 +142,6 @@ function clearDisplay () {
   operator = ''
   expression = ''
   shouldResetDisplay = false
-
   display.value = ''
 }
 
@@ -172,11 +157,8 @@ function changeSign () {
     currentNumber = '-' + currentNumber
   }
 
-  // Replace the last number in the expression
   const parts = expression.split(' ')
-
   parts[parts.length - 1] = currentNumber
-
   expression = parts.join(' ')
 
   display.value = expression
@@ -196,25 +178,18 @@ function calculate () {
 
   if (result === null) {
     display.value = 'Error'
-
-    currentNumber = ''
-    previousNumber = ''
-    operator = ''
-    expression = ''
-
+    resetAfterError()
     return
   }
 
-  const roundedResult = Number(result.toFixed(10))
+  const roundedResult = formatResult(result)
 
-  // Show only the answer after =
   display.value = roundedResult
 
   currentNumber = String(roundedResult)
   previousNumber = ''
   operator = ''
   expression = String(roundedResult)
-
   shouldResetDisplay = true
 }
 
