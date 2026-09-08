@@ -6,6 +6,29 @@ let operator = ''
 let expression = ''
 let shouldResetDisplay = false
 
+// Perform a calculation
+function performCalculation (firstNumber, secondNumber, selectedOperator) {
+  if (selectedOperator === '+') {
+    return firstNumber + secondNumber
+  }
+
+  if (selectedOperator === '-') {
+    return firstNumber - secondNumber
+  }
+
+  if (selectedOperator === '*') {
+    return firstNumber * secondNumber
+  }
+
+  if (selectedOperator === '/') {
+    if (secondNumber === 0) {
+      return null
+    }
+
+    return firstNumber / secondNumber
+  }
+}
+
 // Add numbers and operators
 function appendValue (value) {
   // If the calculator has just displayed a result
@@ -42,9 +65,35 @@ function appendValue (value) {
       return
     }
 
-    previousNumber = currentNumber
+    // Resolve the pending operation before using the new operator
+    if (previousNumber !== '' && operator !== '' && currentNumber !== '') {
+      const result = performCalculation(
+        Number(previousNumber),
+        Number(currentNumber),
+        operator
+      )
+
+      if (result === null) {
+        display.value = 'Error'
+
+        currentNumber = ''
+        previousNumber = ''
+        operator = ''
+        expression = ''
+
+        return
+      }
+
+      const roundedResult = Number(result.toFixed(10))
+
+      previousNumber = String(roundedResult)
+      currentNumber = ''
+    } else {
+      previousNumber = currentNumber
+      currentNumber = ''
+    }
+
     operator = value
-    currentNumber = ''
 
     expression += ' ' + value + ' '
 
@@ -139,41 +188,32 @@ function calculate () {
     return
   }
 
-  const firstNumber = Number(previousNumber)
-  const secondNumber = Number(currentNumber)
+  const result = performCalculation(
+    Number(previousNumber),
+    Number(currentNumber),
+    operator
+  )
 
-  let result
+  if (result === null) {
+    display.value = 'Error'
 
-  if (operator === '+') {
-    result = firstNumber + secondNumber
-  } else if (operator === '-') {
-    result = firstNumber - secondNumber
-  } else if (operator === '*') {
-    result = firstNumber * secondNumber
-  } else if (operator === '/') {
-    if (secondNumber === 0) {
-      display.value = 'Error'
+    currentNumber = ''
+    previousNumber = ''
+    operator = ''
+    expression = ''
 
-      currentNumber = ''
-      previousNumber = ''
-      operator = ''
-      expression = ''
-
-      return
-    }
-
-    result = firstNumber / secondNumber
+    return
   }
 
-  result = Number(result.toFixed(10))
+  const roundedResult = Number(result.toFixed(10))
 
   // Show only the answer after =
-  display.value = result
+  display.value = roundedResult
 
-  currentNumber = String(result)
+  currentNumber = String(roundedResult)
   previousNumber = ''
   operator = ''
-  expression = String(result)
+  expression = String(roundedResult)
 
   shouldResetDisplay = true
 }
